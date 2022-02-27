@@ -1,24 +1,25 @@
-const transpose = function(matrix) {
-  let resultMatrix = [];
-  for (let r = 0; r < matrix.length; r++) {
-    for (let c = 0; c < matrix[r].length; c++) {
-      if (!resultMatrix[c]) {
-        resultMatrix.push([]);
-      }
-      resultMatrix[c].push(matrix[r][c]);
-    }
-  }
-  return resultMatrix;
-};
+const { diagonal } = require('./diagonal');
+const { transpose } = require('./transpose');
   
-const wordSearch = (letters, word) => { 
-  for (i = 1; i <=2; i++) {
-    const horizontalJoin = letters.map(ls => ls.join('')+', '+ls.reverse().join(''))
-    for (l of horizontalJoin) {
-      if (l.includes(word)) return true
-    }
-    letters = transpose(letters);
+const checkExistance = function(matrix,word) {
+  const joinedRows = matrix.map(r => r.join('') + (', ') + r.reverse().join(''));
+  for (const x of joinedRows) {
+    if (x.includes(word)) return true;
   }
+  return false;
+}
+
+const wordSearch = (letters, word) => { 
+
+  if (letters.length === 0) return false; // empty matrix
+
+  if (checkExistance(letters,word)) return true; // horizantal or it's backward
+
+  const transposedArray = transpose(letters);   // vertical or it's backward
+  if (checkExistance(transposedArray,word)) return true; 
+
+  const diagonalArray = diagonal(letters);    // diagonal and it's backward
+  if (checkExistance(diagonalArray,word)) return true;  
   return false;
 }
   
